@@ -13,6 +13,23 @@ Enable AI‑assisted full‑stack delivery from idea to production by:
 - **Roles**: product, UX/UI, backend, frontend, data, QA, DevOps, and project management
 - **Outputs**: requirements, system design, API contracts, data models, code, tests, deployment plans
 
+## Project Structure
+
+### Phases (Sequential Workflow)
+Although the directories are named without numbers, the recommended flow is:
+
+1.  **[discovery](phases/discovery)**: Requirement analysis & market research.
+2.  **[design](phases/design)**: UX/UI design & prototyping.
+3.  **[architecture](phases/architecture)**: System design & tech stack selection.
+4.  **[implementation](phases/implementation)**: Coding & development.
+5.  **[testing](phases/testing)**: QA & integration testing.
+6.  **[deployment](phases/deployment)**: CI/CD & release management.
+7.  **[iteration](phases/iteration)**: Feedback loops & maintenance.
+
+### Other Directories
+- **roles/**: Specific guidance for each role (Product, Design, Eng, etc.).
+- **practices/**: General AI best practices, management, and ethics.
+
 ## How It Works
 1. **Select a phase** and identify the role(s) involved
 2. **Apply AI tools and prompts** tailored to that phase
