@@ -15,6 +15,15 @@ Libraries and frameworks built on top of the languages.
 - **Spring Boot**: Dependency injection, data, security (moved from Roles if applicable).
 - **React/Vue**: Component lifecycle, state management.
 - **PyTorch/TensorFlow**: Model building, training loops.
+- **[Java Architecture Patterns](./frameworks/java-architecture-patterns)**: Backend architecture patterns including:
+  - Monolithic (Single/Multi-Module)
+  - Layered Architecture
+  - Microservices Architecture
+  - DDD (Domain-Driven Design)
+  - Hexagonal (Ports & Adapters)
+  - Clean Architecture
+  - CQRS
+  - Event-Driven Architecture
 
 ### 3. [infrastructure](./infrastructure)
 Tools for deploying and running applications.
