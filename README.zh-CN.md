@@ -1,6 +1,6 @@
 # AI Engineer Tutor
 
-语言：中文 | [English](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/README.en.md)
+语言：中文 | [English](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/README.md)
 
 AI Engineer Tutor 的初衷不变：用 AI 贯穿端到端的全栈交付流程，提升效率与质量。本次仅优化了目录结构，使内容更清晰、可扩展、可导航。
 
