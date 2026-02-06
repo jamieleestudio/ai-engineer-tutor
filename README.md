@@ -1,6 +1,6 @@
 # AI Engineer Tutor
 
-Language: [中文](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/README.zh-CN.md) | English
+Language: [中文](./README.zh-CN.md) | English
 
 AI Engineer Tutor’s intent stays the same: use AI to empower end‑to‑end full‑stack delivery, improving speed and quality. This update only optimizes the folder structure for clarity, scalability, and navigation.
 
@@ -22,51 +22,51 @@ AI Engineer Tutor’s intent stays the same: use AI to empower end‑to‑end fu
 
 ## Optimized Directory Structure
 - phases/ Sequential workflow and phase artifacts
-  - [discovery](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/phases/discovery/README.md)
-  - [design](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/phases/design/README.md)
-  - [architecture](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/phases/architecture/README.md)
+  - [discovery](phases/discovery/README.md)
+  - [design](phases/design/README.md)
+  - [architecture](phases/architecture/README.md)
 - roles/ Role guides and skills
-  - [roles](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/roles/README.md)
+  - [roles](roles/README.md)
 - practices/ AI practices and general methodology
-  - [practices](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/practices/README.md)
+  - [practices](practices/README.md)
 - architecture/ Architecture patterns and Evolvable Architecture (migrated from skills)
-  - [overview](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/architecture/README.md)
-  - [patterns](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/architecture/patterns/README.md)
-  - [evolvable-architecture](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/architecture/evolvable-architecture/README.md)
+  - [overview](architecture/README.md)
+  - [patterns](architecture/patterns/README.md)
+  - [evolvable-architecture](architecture/evolvable-architecture/README.md)
 - skills/ Index entry (points to new locations)
-  - [skills](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/skills/README.md)
+  - [skills](skills/README.md)
 - foundations/ Fundamentals and foundational knowledge
-  - [foundations](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/foundations/README.md)
+  - [foundations](foundations/README.md)
 - interaction/ Interaction design and prompt engineering
-  - [interaction](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/interaction/README.md)
+  - [interaction](interaction/README.md)
 - memory/ Memory and semantic persistence
-  - [memory](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/memory/README.md)
+  - [memory](memory/README.md)
 - agents/ Agents and autonomous flows
-  - [agents](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/agents/README.md)
+  - [agents](agents/README.md)
 - integration/ System integration and contracts
-  - [integration](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/integration/README.md)
+  - [integration](integration/README.md)
 - evaluation/ Evaluation and benchmarking
-  - [evaluation](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/evaluation/README.md)
+  - [evaluation](evaluation/README.md)
 - safety/ Security and compliance
-  - [safety](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/safety/README.md)
+  - [safety](safety/README.md)
 - performance/ Performance and optimization
-  - [performance](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/performance/README.md)
+  - [performance](performance/README.md)
 - lifecycle/ Build, test, deployment, and operations
-  - [lifecycle](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/lifecycle/README.md)
+  - [lifecycle](lifecycle/README.md)
 - labs/ Experiments and demos
-  - [labs](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/labs/README.md)
+  - [labs](labs/README.md)
 - templates/ Templates and scaffolding
-  - [templates](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/templates/README.md)
+  - [templates](templates/README.md)
 - assessments/ Reviews and checklists
-  - [assessments](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/assessments/README.md)
+  - [assessments](assessments/README.md)
 - roadmaps/ Learning and delivery roadmaps
-  - [roadmaps](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/roadmaps/README.md)
+  - [roadmaps](roadmaps/README.md)
 - resources/ External resources and references
-  - [resources](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/resources/README.md)
+  - [resources](resources/README.md)
 - case-studies/ Case studies and retrospectives
-  - [case-studies](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/case-studies/README.md)
+  - [case-studies](case-studies/README.md)
 - rules/ Project rules and conventions
-  - [rules](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/rules/README.md)
+  - [rules](rules/README.md)
 
 ## Usage
 - Start from phases/, pick your current phase, and use role guides in roles/

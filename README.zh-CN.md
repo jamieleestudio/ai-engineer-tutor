@@ -1,6 +1,6 @@
 # AI Engineer Tutor
 
-语言：中文 | [English](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/README.md)
+语言：中文 | [English](./README.en.md)
 
 AI Engineer Tutor 的初衷不变：用 AI 贯穿端到端的全栈交付流程，提升效率与质量。本次仅优化了目录结构，使内容更清晰、可扩展、可导航。
 
@@ -22,56 +22,56 @@ AI Engineer Tutor 的初衷不变：用 AI 贯穿端到端的全栈交付流程�
 
 ## 目录结构（优化版）
 - phases/ 分阶段工作流与阶段产物
-  - [discovery](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/phases/discovery/README.md)
-  - [design](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/phases/design/README.md)
-  - [architecture](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/phases/architecture/README.md)
+  - [discovery](phases/discovery/README.md)
+  - [design](phases/design/README.md)
+  - [architecture](phases/architecture/README.md)
 - roles/ 角色指南与技能
-  - [roles](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/roles/README.md)
+  - [roles](roles/README.md)
 - practices/ AI 实践与通用方法论
-  - [practices](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/practices/README.md)
+  - [practices](practices/README.md)
 - architecture/ 架构模式与可演进架构专题（迁移自 skills）
-  - [总览](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/architecture/README.md)
-  - [patterns](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/architecture/patterns/README.md)
-  - [evolvable-architecture](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/architecture/evolvable-architecture/README.md)
+  - [总览](architecture/README.md)
+  - [patterns](architecture/patterns/README.md)
+  - [evolvable-architecture](architecture/evolvable-architecture/README.md)
 - skills/ 索引入口（指向新位置）
-  - [skills](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/skills/README.md)
+  - [skills](skills/README.md)
 - foundations/ 基础理论与通识
-  - [foundations](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/foundations/README.md)
+  - [foundations](foundations/README.md)
 - interaction/ 交互与提示工程
-  - [interaction](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/interaction/README.md)
+  - [interaction](interaction/README.md)
 - memory/ 记忆与语义持久化
-  - [memory](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/memory/README.md)
+  - [memory](memory/README.md)
 - agents/ 智能体与自治流程
-  - [agents](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/agents/README.md)
+  - [agents](agents/README.md)
 - integration/ 系统集成与契约
-  - [integration](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/integration/README.md)
+  - [integration](integration/README.md)
 - evaluation/ 评估与基准
-  - [evaluation](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/evaluation/README.md)
+  - [evaluation](evaluation/README.md)
 - safety/ 安全与合规
-  - [safety](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/safety/README.md)
+  - [safety](safety/README.md)
 - performance/ 性能与优化
-  - [performance](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/performance/README.md)
+  - [performance](performance/README.md)
 - lifecycle/ 构建、测试、部署与运维
-  - [lifecycle](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/lifecycle/README.md)
+  - [lifecycle](lifecycle/README.md)
 - labs/ 实验与演示
-  - [labs](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/labs/README.md)
+  - [labs](labs/README.md)
 - templates/ 模板与脚手架
-  - [templates](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/templates/README.md)
+  - [templates](templates/README.md)
 - assessments/ 评审与检查清单
-  - [assessments](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/assessments/README.md)
+  - [assessments](assessments/README.md)
 - roadmaps/ 学习与交付路线
-  - [roadmaps](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/roadmaps/README.md)
+  - [roadmaps](roadmaps/README.md)
 - resources/ 外部资源与参考
-  - [resources](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/resources/README.md)
+  - [resources](resources/README.md)
 - case-studies/ 案例与复盘
-  - [case-studies](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/case-studies/README.md)
+  - [case-studies](case-studies/README.md)
 - rules/ 项目规则与约定
-  - [rules](file:///Users/lixiaofeng/IdeaProjects/github/ai-engineer-tutor/rules/README.md)
+  - [rules](rules/README.md)
 
 ## 使用指南
 - 从 phases/ 选择当前阶段，按角色在 roles/ 获取工具与方法
 - 参考 architecture/ 选择合适的架构模式或可演进路径
-+- 在 lifecycle/ 中执行构建、测试、部署与运维动作
+- 在 lifecycle/ 中执行构建、测试、部署与运维动作
 - 在 assessments/ 使用清单做质量闸门，把控交付
 
 ## 目标成果
