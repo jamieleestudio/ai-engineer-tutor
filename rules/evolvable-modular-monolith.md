@@ -80,6 +80,13 @@ com.example.module
 *   **形式**：`@RestController`。
 *   **原则**：BFF (Backend for Frontend) 模式，专注于视图适配，不应直接暴露 RPC 接口。
 
+### 4.3 单模块命名对齐 (Single-Module Alignment)
+*   当业务域尚未拆分 `xxx-api` 模块时，仍按“边界用途”选择对象后缀，以保证未来抽取契约模块时命名稳定：
+    *   Web I/O：`XxxRequest` / `XxxResponse`（或 `XxxView`）
+    *   模块间契约（未来进入 `xxx-api`）：`XxxRequest` / `XxxDTO`
+    *   用例输入/输出（应用层内部）：`XxxCommand` / `XxxQuery` / `XxxResult`
+*   约束：`*Request/*Response/*DTO` 不进入 Domain；Domain 只保留业务语言（Entity/VO/DomainEvent）。
+
 ## 5. 演进与部署策略
 
 ### 5.1 单体模式 (当前状态)

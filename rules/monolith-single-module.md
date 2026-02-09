@@ -56,6 +56,7 @@ pr_checklist:
   - "类位于正确包层"
   - "无反向依赖"
   - "无框架类型渗透到 domain/application"
+  - "入参/出参对象命名符合层级（Request/Response、Command/Query/Result、Entity/VO）"
   - "通过端口注入外部资源"
   - "补充匹配层级测试"
   - "通过 ArchUnit"
@@ -87,6 +88,26 @@ skill_prompt:
 **端口位置**
 - 在 domain 或 application 定义端口（Repository、ExternalService、EventPublisher）
 - 在 infrastructure 实现端口；interfaces 仅调用 application 用例
+
+**入参/出参对象命名规约**
+- 目标：边界清晰，interfaces 负责 I/O；application 负责用例输入输出；domain 只保留业务语言；infrastructure 只保留技术细节
+- 总则：`*Request/*Response` 只允许出现在 interfaces；`*Command/*Query/*Result` 只允许出现在 application；domain 禁止 `*DTO/*Request/*Response/*Command/*Query`
+- interfaces（入站适配）
+  - Web：`XxxRequest` / `XxxResponse`（或 `XxxView`）
+  - RPC Facade（若存在对外契约）：`XxxRequest` / `XxxDTO`
+  - MQ 入站：`XxxEvent`（集成事件，不复用 Web/RPC DTO）
+- application（用例层）
+  - 用例输入：`XxxCommand`（写）/ `XxxQuery`（读）
+  - 用例输出：`XxxResult`（统一使用该后缀；如需替代只能全局一致）
+  - 应用内部数据结构：`XxxDTO`（仅限 `application.dto`，不可进入 domain）
+- domain（领域层）
+  - 聚合/实体：`Xxx`；标识：`XxxId`；值对象：`XxxValue` / `XxxVO`
+  - 领域事件：`XxxDomainEvent`
+  - 领域服务：方法参数与返回值优先使用领域对象/值对象（禁止 `*Request/*Response/*DTO/*Command/*Query`）
+- infrastructure（出站实现）
+  - 持久化对象：`XxxEntity`（JPA）或 `XxxPO`（MyBatis）
+  - 外部系统 DTO：`XxxClientRequest` / `XxxClientResponse`
+  - 端口实现类：`XxxRepositoryImpl` / `XxxGatewayImpl`
 
 **包结构示例**
 - com.yourorg.yourapp.domain.model、domain.value、domain.aggregate、domain.service、domain.event、domain.spec、domain.factory、domain.repository
@@ -128,6 +149,11 @@ public class LayeredArchitectureRules {
     static final ArchRule domain_no_external_deps =
         noClasses().that().resideInAPackage("..domain..")
             .should().dependOnClassesThat().resideInAnyPackage("..application..", "..interfaces..", "..infrastructure..");
+
+    @ArchTest
+    static final ArchRule domain_no_transport_models =
+        noClasses().that().resideInAPackage("..domain..")
+            .should().haveSimpleNameMatching(".*(Request|Response|DTO|Command|Query|Result)$");
 
     @ArchTest
     static final ArchRule application_only_depends_on_domain =
