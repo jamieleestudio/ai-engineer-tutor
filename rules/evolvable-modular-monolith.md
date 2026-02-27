@@ -1,117 +1,141 @@
-# Evolvable Modular Monolith Architecture Rules
+# Evolvable Modular Monolith Architecture Rules for AI
 
-此文档定义了本项目的架构设计原则、分包结构与演进策略。AI 助手在进行代码生成、架构分析与重构时，**必须严格遵守**以下规则。
+This document serves as the **primary instruction set** for AI assistants when generating, refactoring, or analyzing code within this project.
 
-## 1. 核心设计理念 (Core Philosophy)
-
-*   **物理隔离契约**：模块间通信必须通过独立的 API 模块（Maven Module）进行，严禁直接依赖实现模块。
-*   **单向依赖**：依赖关系只能由上层指向下层，由实现指向契约。
-*   **可演进性**：默认作为单体部署，但必须保持随时可拆分为微服务的结构就绪度（Microservices-Ready）。
-*   **实事求是**：API 模块按需创建。只有当模块需要被其他后端模块依赖时，才提取 API 模块；否则保持单模块结构。
-
-## 2. 物理工程结构 (Maven Modules)
-
-对于一个典型的业务域（如 `user`），物理结构如下：
-
-### 2.1 API 模块 (`xxx-api`)
-*   **定位**：外交契约 (External Contract)。
-*   **职责**：存放提供给**其他业务模块**调用的接口定义。
-*   **包含内容**：
-    *   `Service Interfaces` (RPC 风格，如 `UserReadService`)
-    *   `DTOs` (Request/Response POJOs, 实现 `Serializable`)
-    *   `Enums` (跨模块共享的状态枚举)
-    *   `Events` (跨模块集成事件)
-*   **禁止内容**：
-    *   **严禁**包含任何业务逻辑实现。
-    *   **严禁**包含 Spring Context / Persistence 等重量级依赖。
-    *   **严禁**包含 Web 层相关对象 (如 `HttpServletRequest`)。
-
-### 2.2 实现模块 (`xxx`)
-*   **定位**：业务实现 (Implementation)。
-*   **职责**：包含所有业务逻辑、数据持久化及对外暴露的适配器。
-*   **依赖规则**：
-    *   若需要被外部调用：`implementation project(':xxx-api')`
-    *   若需要调用其他模块：`implementation project(':other-module-api')`
-    *   **严禁**依赖其他模块的实现模块 (e.g., `user` 依赖 `order` 是绝对禁止的)。
-
-## 3. 逻辑分层架构 (Logical Layers)
-
-在实现模块 (`xxx`) 内部，严格遵循以下 **4 层架构**：
-
-```text
-com.example.module
-├── interfaces              <-- [适配层/入口层]
-│   ├── web                 <-- HTTP Rest Controller (给前端/App)
-│   ├── facade              <-- RPC Service Implementation (给其他模块，实现 xxx-api)
-│   └── listener            <-- MQ Consumer (给消息中间件)
-├── application             <-- [应用层/编排层]
-│   └── service             <-- 业务流程编排 (Transaction script, DTO <-> Entity 转换)
-├── domain                  <-- [领域层/核心层]
-│   ├── model               <-- Entity, Value Object, Aggregate Root
-│   ├── service             <-- Domain Service (核心业务规则)
-│   └── repository          <-- Repository Interface (仓储契约)
-└── infrastructure          <-- [基础设施层]
-    ├── persistence         <-- Repository Implementation (MyBatis/JPA)
-    ├── client              <-- Feign Client / RPC Client (外部服务调用)
-    └── config              <-- Configuration Classes
-```
-
-### 3.1 层级依赖规则
-1.  **Interfaces** -> 依赖 -> **Application**
-2.  **Application** -> 依赖 -> **Domain**
-3.  **Infrastructure** -> 依赖 -> **Domain** (DIP: 依赖倒置)
-    *   *注：在工程实践中，Infrastructure 也可以被 Application 直接使用（如工具类），但 Domain 层严禁依赖 Infrastructure。*
-
-## 4. API 设计规范 (API Design Guidelines)
-
-### 4.1 模块间接口 (RPC Contract)
-*   **位置**：`xxx-api` 模块。
-*   **命名**：`XxxService` (e.g., `UserReadService`, `OrderCreateService`)。
-*   **方法签名**：
-    *   入参：必须封装为 `XxxRequest` 对象 (支持向后兼容)。
-    *   出参：必须封装为 `XxxDTO` 对象 (贫血模型，不暴露 Entity)。
-    *   异常：不抛出受检异常，使用 Result 包装或运行时异常。
-*   **原则**：
-    *   **最小权限**：只暴露对方需要的方法。
-    *   **读写分离**：建议将查询接口 (`ReadService`) 和命令接口 (`WriteService`) 分离。
-
-### 4.2 前端接口 (Web API)
-*   **位置**：`xxx` 模块 -> `interfaces.web` 包。
-*   **形式**：`@RestController`。
-*   **原则**：BFF (Backend for Frontend) 模式，专注于视图适配，不应直接暴露 RPC 接口。
-
-### 4.3 单模块命名对齐 (Single-Module Alignment)
-*   当业务域尚未拆分 `xxx-api` 模块时，仍按“边界用途”选择对象后缀，以保证未来抽取契约模块时命名稳定：
-    *   Web I/O：`XxxRequest` / `XxxResponse`（或 `XxxView`）
-    *   模块间契约（未来进入 `xxx-api`）：`XxxRequest` / `XxxDTO`
-    *   用例输入/输出（应用层内部）：`XxxCommand` / `XxxQuery` / `XxxResult`
-*   约束：`*Request/*Response/*DTO` 不进入 Domain；Domain 只保留业务语言（Entity/VO/DomainEvent）。
-
-## 5. 演进与部署策略
-
-### 5.1 单体模式 (当前状态)
-*   **部署**：所有 `xxx` 模块打包在一个 Spring Boot Application (Server) 中。
-*   **调用**：`OrderService` 注入 `UserReadService` 时，Spring 容器直接注入 `UserReadServiceFacade` 的本地实例。
-*   **性能**：本地方法调用，零网络开销。
-
-### 5.2 微服务模式 (未来演进)
-*   **部署**：`user` 模块独立打包部署。
-*   **调用**：
-    1.  `order` 模块保持依赖 `user-api` 不变。
-    2.  `order` 模块配置 RPC 框架 (Dubbo/Feign) 代理 `UserReadService`。
-    3.  `user` 模块配置 RPC 框架暴露 `UserReadServiceFacade`。
-*   **代码变更**：业务逻辑层 (Application/Domain) **零修改**。
-
-## 6. ArchUnit 守护规则 (Architecture Guard)
-
-所有 Java 代码必须通过以下架构测试：
-
-1.  **物理边界**：`xxx` 模块不能访问其他 `yyy` 模块的包 (除了 `yyy.api`)。
-2.  **分层边界**：
-    *   `Domain` 层不能依赖 `Application`, `Interfaces`, `Infrastructure`。
-    *   `Interfaces` 层只能被外部框架调用，不能被内部层调用。
-3.  **API 实现约束**：
-    *   实现 `xxx-api` 接口的类，必须位于 `interfaces.facade` 包下。
+**CRITICAL INSTRUCTION**: You must adhere to these rules strictly. Any deviation constitutes an architecture violation.
 
 ---
-**Summary for AI**: When generating code or refactoring, ALWAYS check if a separate `api` module is needed. If yes, place interfaces/DTOs there. If no, keep it simple but strictly follow the 4-layer structure inside the module.
+
+## 1. Core Philosophy & Strategy
+
+- **Deployment Mode**: Monolithic deployment (single Spring Boot app), but **Microservice-Ready structure**.
+- **Communication**: All cross-module communication MUST go through explicit API modules (`xxx-api`).
+- **Evolution Strategy**: Start with a single module (`xxx`). Extract `xxx-api` ONLY when another module needs to call it.
+- **Dependency Direction**: `Upper Layer` -> `Lower Layer`, `Implementation` -> `Contract`.
+
+## 2. Physical Structure (Maven Modules)
+
+### Rule 2.1: Module Types
+For a business domain (e.g., `user`):
+
+| Module Type | Suffix | Content Allowed | Content Forbidden |
+| :--- | :--- | :--- | :--- |
+| **API Module** | `-api` | Interfaces (`Service`), DTOs, Enums, Events | Implementation logic, Spring Context, Persistence, Web (HttpServlet) |
+| **Impl Module** | (none) | Domain logic, DB access, Controller, Listeners | Direct dependency on other Impl modules |
+
+### Rule 2.2: Dependency Graph
+- `xxx` (Impl) -> depends on -> `xxx-api` (Self API)
+- `xxx` (Impl) -> depends on -> `yyy-api` (Other API)
+- **FORBIDDEN**: `xxx` (Impl) -> depends on -> `yyy` (Other Impl)
+
+## 3. Logical Layering (Inside Implementation Module)
+
+You MUST structure the `src/main/java/com/example/{module}` directory as follows:
+
+```text
+com.example.{module}
+├── interfaces          (Adapters/Entry Points)
+│   ├── web             -> @RestController (HTTP for Frontend/App)
+│   ├── facade          -> Service Impl of `xxx-api` (RPC for Backend)
+│   └── listener        -> MQ Consumers
+├── application         (Orchestration)
+│   └── service         -> Business Flows, DTO<>Entity Mapping
+├── domain              (Core Business Logic - PURE JAVA)
+│   ├── model           -> Entities, Aggregates, VOs
+│   ├── service         -> Domain Services (Complex Rules)
+│   └── repository      -> Repository Interfaces ONLY
+└── infrastructure      (Technical Implementation)
+    ├── persistence     -> JPA/MyBatis Impl, POs
+    ├── client          -> Feign/RPC Clients
+    └── config          -> Spring Configurations
+```
+
+### Rule 3.1: Layer Dependencies
+1.  `Interfaces` -> `Application`
+2.  `Application` -> `Domain`
+3.  `Infrastructure` -> `Domain` (Inversion of Control)
+4.  **STRICTLY FORBIDDEN**: `Domain` -> `Infrastructure`, `Domain` -> `Application`, `Domain` -> `Interfaces`.
+
+## 4. Coding Conventions
+
+### 4.1 Naming Standards
+| Object Type | Suffix | Location | Note |
+| :--- | :--- | :--- | :--- |
+| **RPC Interface** | `Service` | `xxx-api` | e.g., `UserReadService` |
+| **RPC Input** | `Request` | `xxx-api` | Must be Serializable |
+| **RPC Output** | `DTO` | `xxx-api` | Anemic model, NO Entities |
+| **Web Controller** | `Controller` | `interfaces.web` | BFF pattern |
+| **Web Input** | `Request` | `interfaces.web` | HTTP Request Body |
+| **Web Output** | `Response` | `interfaces.web` | HTTP Response Body |
+| **App Input** | `Command`/`Query` | `application` | Application Layer Input |
+| **Domain Event** | `Event` | `domain/api` | Integration events go to API |
+
+### 4.2 API Design
+- **RPC APIs** (`xxx-api`):
+    - MUST NOT expose `Entity` objects.
+    - MUST NOT throw checked exceptions (use `Result<T>` or RuntimeException).
+    - Prefer separating `ReadService` and `WriteService`.
+- **Web APIs** (RESTful):
+    - **Resource-Oriented**: URLs MUST represent resources (nouns), not actions (verbs). E.g., `POST /users` (good), `POST /createUser` (bad).
+    - **HTTP Methods**: Use standard methods strictly (GET for retrieval, POST for creation, PUT/PATCH for update, DELETE for removal).
+    - **Status Codes**: Return explicit status codes (201 Created, 204 No Content, 400 Bad Request, 404 Not Found).
+    - **Stateless**: The server must not store client state between requests.
+
+## 5. AI Code Generation Workflows
+
+### Scenario A: Creating a New Feature (Single Module)
+1.  Define Domain Model (`domain.model`).
+2.  Define Repository Interface (`domain.repository`).
+3.  Implement Persistence (`infrastructure.persistence`).
+4.  Define Application Service (`application.service`) to orchestrate.
+5.  Expose via Web Controller (`interfaces.web`).
+6.  **Do NOT create an API module** unless explicitly requested or required by another module.
+
+### Scenario B: Cross-Module Call (e.g., Order calls User)
+1.  Check if `user-api` exists. If not, **create it**.
+2.  Move `UserReadService` interface and DTOs from `user` to `user-api`.
+3.  Refactor `user` implementation to implement the interface in `interfaces.facade`.
+4.  Add dependency `implementation project(':user-api')` to `order`.
+5.  Inject `UserReadService` in `order`.
+
+## 6. Architecture Guard Rails (Self-Correction)
+
+Before outputting code, verify:
+1.  [ ] Did I import any class from `com.example.othermodule` (except `api`)? -> **Fix: Use API module.**
+2.  [ ] Did I use an `@Entity` in a Controller return type? -> **Fix: Use DTO.**
+3.  [ ] Is `Domain` depending on `Spring` (except basic annotations)? -> **Fix: Remove dependency.**
+4.  [ ] Is business logic leaking into `Controller`? -> **Fix: Move to Application Service.**
+
+## 7. ArchUnit Enforcement
+
+The following ArchUnit rules MUST be implemented in the project's test suite to automatically reject architectural violations.
+
+### 7.1 Layered Architecture Definition
+```java
+layeredArchitecture()
+    .consideringOnlyDependenciesInAnyPackage("com.example..")
+    .layer("Interfaces").definedBy("..interfaces..")
+    .layer("Application").definedBy("..application..")
+    .layer("Domain").definedBy("..domain..")
+    .layer("Infrastructure").definedBy("..infrastructure..")
+    
+    .whereLayer("Interfaces").mayNotBeAccessedByAnyLayer()
+    .whereLayer("Application").mayOnlyBeAccessedByLayers("Interfaces")
+    .whereLayer("Domain").mayOnlyBeAccessedByLayers("Application", "Infrastructure")
+    .whereLayer("Infrastructure").mayNotBeAccessedByAnyLayer(); // In strict mode
+```
+
+### 7.2 Module Isolation
+Classes in an implementation module `com.example.moduleA..` MUST NOT depend on classes in `com.example.moduleB..` UNLESS the target class is in `com.example.moduleB.api..`.
+
+### 7.3 Domain Purity
+Classes residing in `..domain..` package:
+- MUST NOT depend on `org.springframework..` (except `stereotype` or `transaction.annotation`).
+- MUST NOT depend on `javax.persistence..` or `jakarta.persistence..` (if using strict DDD separation).
+- MUST NOT depend on `..infrastructure..` or `..interfaces..`.
+
+### 7.4 Naming & Location
+- Classes annotated with `@RestController` MUST reside in `..interfaces.web..`.
+- Classes annotated with `@Repository` or implementing `Repository` interfaces MUST reside in `..infrastructure.persistence..`.
+- Classes ending with `DTO` MUST NOT reside in `..domain..`.
+- Classes ending with `Entity` MUST reside in `..domain.model..` (or `infrastructure` depending on mapping strategy).
